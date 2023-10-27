@@ -24,16 +24,22 @@ void Novum::AutoVec<T>::add(const T& obj)
         _max = new_Max;
     }
 
-    size_t i = _size;
-    for (;i >= 1; --i)
+    if (_decider)
     {
-        if (!_decider(obj, _src[i-1]))
-            _src[i] = _src[i-1];
-        else                
-            break;            
-    }
+        size_t i = _size;
+        for (;i >= 1; --i)
+        {
+            if (!_decider(obj, _src[i-1]))
+                _src[i] = _src[i-1];
+            else                
+                break;            
+        }
 
-    _src[i] = obj;    
+        _src[i] = obj; 
+    } 
+    else
+        _src[_size] = obj;
+
     _size++;
 }
 
@@ -106,33 +112,35 @@ void Novum::AutoVec<T>::source(const AutoVec& obj)
 template <typename T>
 int64_t Novum::AutoVec<T>::searchIndex(const T& to_Search) const
 {
-    size_t temp_Start = 0, temp_End = _size, temp_Mid;
-    bool isAsec = _decider(1, 0);
-    while (temp_Start <= temp_End)
+    if (_decider)
     {
-        temp_Mid = (temp_Start + temp_End) / 2;
-        if (_src[temp_Mid] == to_Search)
+        size_t temp_Start = 0, temp_End = _size, temp_Mid;
+        bool isAsec = _decider(1, 0);
+        while (temp_Start <= temp_End)
         {
-            return static_cast<int64_t>(temp_Mid);
-        }
+            temp_Mid = (temp_Start + temp_End) / 2;
+            if (_src[temp_Mid] == to_Search)
+            {
+                return static_cast<int64_t>(temp_Mid);
+            }
 
-        else if (_src[temp_Mid] > to_Search) 
-        {
-            if (isAsec)
-                temp_End = temp_Mid - 1;
-            else
-                temp_Start = temp_Mid + 1;
-        }
-        
-        else 
-        {
-            if (isAsec)
-                temp_Start = temp_Mid + 1;
-            else
-                temp_End = temp_Mid - 1;
+            else if (_src[temp_Mid] > to_Search) 
+            {
+                if (isAsec)
+                    temp_End = temp_Mid - 1;
+                else
+                    temp_Start = temp_Mid + 1;
+            }
+            
+            else 
+            {
+                if (isAsec)
+                    temp_Start = temp_Mid + 1;
+                else
+                    temp_End = temp_Mid - 1;
+            }
         }
     }
-
     return -1;
 }
 
