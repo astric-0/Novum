@@ -21,7 +21,7 @@ public:
     AutoVec(): _src(nullptr), _size(0), _max(0), _decider(Novum::Deciders::GET_ASEC<T>())
     {}
 
-    AutoVec(std::function<bool(const T&, const T&)> decider):  _src(nullptr), _size(0), _max(0), _decider(decider)
+    AutoVec(Novum::Typenames::DECIDER<T> decider):  _src(nullptr), _size(0), _max(0), _decider(decider)
     {}
 
     AutoVec(AutoVec& obj): _src(new T[obj._max]), _size(obj._size), _max(obj._max), _decider(obj._decider)
