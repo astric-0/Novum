@@ -101,7 +101,11 @@ public:
         
         return *this;
     }
-     
+    
+    ~AutoVec()
+    {
+        delete[] _src;
+    }
 };
 
 }
